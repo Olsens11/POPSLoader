@@ -8750,7 +8750,7 @@ local function BuildPopstarterSelectorPath(device_page, game_name)
     -- POPStarter reads the SB. prefix from argv0 are PS2-confirm-only -- if the share
     -- connects but a game won't boot, the first fallbacks to try are
     -- "mass:/POPS/SB."..game_name..".ELF" then "mass:/SB."..game_name..".ELF".
-    return "smb:/POPS/SB."..game_name..".ELF"
+    return "mass:/SB."..game_name..".ELF"
   end
   if device_page == "HDD" then
     return BuildLiteralElfName(game_name)
@@ -9255,11 +9255,6 @@ local function BuildPopstarterLaunchCommand(policy_name, device_page, game_name,
     reboot_iop = 1
   elseif policy_name == "HDD" then
     reboot_iop = 0
-  end
-
-  -- TEST: force a clean IOP for SMB POPStarter launch.
-  if device_page == "SMB" then
-    reboot_iop = 1
   end
 
   return {
