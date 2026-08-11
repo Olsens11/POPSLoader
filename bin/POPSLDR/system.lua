@@ -9238,25 +9238,37 @@ end
 local function BuildPopstarterLaunchCommand(policy_name, device_page, game_name, hdd_selector_mode, hdd_partition_label, popstarter_on_hdd)
   local argv0_selector = BuildPopstarterSelectorPath(device_page, game_name)
   local launch_route = "default"
+
   if policy_name == "HDD" then
-    argv0_selector, launch_route = ResolveHddPopstarterSelectorRoute(game_name, hdd_selector_mode, hdd_partition_label, popstarter_on_hdd)
+    argv0_selector, launch_route = ResolveHddPopstarterSelectorRoute(
+      game_name,
+      hdd_selector_mode,
+      hdd_partition_label,
+      popstarter_on_hdd
+    )
   end
+
   local argv = {argv0_selector}
   local reboot_iop = PLDR.REBOOT_IOP_WHILE_LOADING_POPSTARTER
-if popstarter_on_hdd then
-  reboot_iop = 1
-elseif policy_name == "HDD" then
-  reboot_iop = 0
-end
 
--- TEST: SMB needs a clean IOP before POPStarter takes over.
-if device_page == "SMB" then
-  reboot_iop = 1
-end
+  if popstarter_on_hdd then
+    reboot_iop = 1
+  elseif policy_name == "HDD" then
+    reboot_iop = 0
+  end
 
--- TEST: SMB needs a clean IOP before POPStarter takes over.
-if device_page == "SMB" then
-  reboot_iop = 1
+  -- TEST: force a clean IOP for SMB POPStarter launch.
+  if device_page == "SMB" then
+    reboot_iop = 1
+  end
+
+  return {
+    elf_path = nil,
+    argv = argv,
+    argv0_selector = argv0_selector,
+    launch_route = launch_route,
+    reboot_iop = reboot_iop
+  }
 end
 
 function PLDR.RunPOPStarterGame(gamelocation, game, ui_scene, launch_options)
