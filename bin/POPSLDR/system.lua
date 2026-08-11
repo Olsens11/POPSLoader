@@ -8750,7 +8750,7 @@ local function BuildPopstarterSelectorPath(device_page, game_name)
     -- POPStarter reads the SB. prefix from argv0 are PS2-confirm-only -- if the share
     -- connects but a game won't boot, the first fallbacks to try are
     -- "mass:/POPS/SB."..game_name..".ELF" then "mass:/SB."..game_name..".ELF".
-    return "mass:/POPS/SB."..game_name..".ELF"
+    return "smb:/POPS/SB."..game_name..".ELF"
   end
   if device_page == "HDD" then
     return BuildLiteralElfName(game_name)
@@ -9243,18 +9243,15 @@ local function BuildPopstarterLaunchCommand(policy_name, device_page, game_name,
   end
   local argv = {argv0_selector}
   local reboot_iop = PLDR.REBOOT_IOP_WHILE_LOADING_POPSTARTER
-  if popstarter_on_hdd then
-    reboot_iop = 1
-  elseif policy_name == "HDD" then
-    reboot_iop = 0
-  end
-  return {
-    elf_path = nil,
-    argv = argv,
-    argv0_selector = argv0_selector,
-    launch_route = launch_route,
-    reboot_iop = reboot_iop
-  }
+if popstarter_on_hdd then
+  reboot_iop = 1
+elseif policy_name == "HDD" then
+  reboot_iop = 0
+end
+
+-- TEST: SMB needs a clean IOP before POPStarter takes over.
+if device_page == "SMB" then
+  reboot_iop = 1
 end
 
 function PLDR.RunPOPStarterGame(gamelocation, game, ui_scene, launch_options)
