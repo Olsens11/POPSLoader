@@ -9749,7 +9749,24 @@ function PLDR.RunPOPStarterGame(gamelocation, game, ui_scene, launch_options)
   end
 
   local reboot_iop = launch_cmd.reboot_iop
-  if UI ~= nil and UI.CoverCache ~= nil and UI.CoverCache.Clear ~= nil then
+
+-- TEST: launch the real physical SB ELF with no synthetic argv.
+if device_page == "SMB" then
+  local direct_sb = "mass:/SB."..game_name..".ELF"
+
+  popstarter = direct_sb
+  argv = {}
+  reboot_iop = 0
+
+  context.exec_path = direct_sb
+  context.reboot_iop = 0
+
+  launch_diagnostics.final_resolved_exec_path = direct_sb
+  launch_diagnostics.route = "smb-direct-sb-noarg"
+  context.launch_route = "smb-direct-sb-noarg"
+end
+
+if UI ~= nil and UI.CoverCache ~= nil and UI.CoverCache.Clear ~= nil then
     UI.CoverCache:Clear()
   end
   context.hdd_preexec_gate_mode = hdd_preexec_gate_mode
