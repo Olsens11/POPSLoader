@@ -2902,6 +2902,7 @@ UI = {
           {key = "MX4SIO",   label = "MX4SIO"},
           {key = "USB",      label = "USB"},
           {key = "MMCE",     label = "MMCE"},
+ 		  {key = "SMB",      label = "SMB (v1)"},
           {key = "HDD",      label = "HDD (PFS)"},
           {key = "EXFAT",    label = "HDD (exFAT)"},
         }
