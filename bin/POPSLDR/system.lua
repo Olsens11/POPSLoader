@@ -4909,6 +4909,7 @@ local function NormalizeBootPage(value)
   -- exFAT internal HDD (carousel opt 3). Accepting EXFAT/ATA here is what lets the
   -- Boot Page target the exFAT page at all (it used to fold to Carousel).
   if key == "EXFAT" or key == "ATA" then return "EXFAT" end
+  if key == "SMB" then return "SMB" end
   return "Carousel"
 end
 
@@ -10093,7 +10094,7 @@ PLDR.SurfaceLaunchArgsDebug()
 -- leaves the default MMCE-at-index-1 carousel behavior untouched.
 if type(PLDR.LAUNCH_ARGS) ~= "table"
    or type(PLDR.LAUNCH_ARGS.page) ~= "string" or PLDR.LAUNCH_ARGS.page == "" then
-  local boot_to_opt = { MMCE = 1, MX4SIO = 2, EXFAT = 3, HDD = 4, USB = 5 }
+  local boot_to_opt = { MMCE = 1, MX4SIO = 2, EXFAT = 3, HDD = 4, USB = 5, SMB = 7 }
   local opt = boot_to_opt[tostring(PLDR.BOOT_PAGE or "Carousel")]
   -- If the chosen Boot Page device has been hidden from the carousel, don't
   -- auto-enter it -- fall back to the normal carousel instead. Toast WHY (this
