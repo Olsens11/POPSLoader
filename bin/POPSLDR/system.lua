@@ -8750,7 +8750,7 @@ local function BuildPopstarterSelectorPath(device_page, game_name)
     -- POPStarter reads the SB. prefix from argv0 are PS2-confirm-only -- if the share
     -- connects but a game won't boot, the first fallbacks to try are
     -- "mass:/POPS/SB."..game_name..".ELF" then "mass:/SB."..game_name..".ELF".
-    return "mass:/SB."..game_name..".ELF"
+    return "smb:/POPS/SB."..game_name..".ELF"
   end
   if device_page == "HDD" then
     return BuildLiteralElfName(game_name)
@@ -9749,22 +9749,6 @@ function PLDR.RunPOPStarterGame(gamelocation, game, ui_scene, launch_options)
   end
 
   local reboot_iop = launch_cmd.reboot_iop
-
--- TEST: launch the real physical SB ELF with no synthetic argv.
-if device_page == "SMB" then
-  local direct_sb = "mass:/SB."..game_name..".ELF"
-
-  popstarter = direct_sb
-  argv = {}
-  reboot_iop = 0
-
-  context.exec_path = direct_sb
-  context.reboot_iop = 0
-
-  launch_diagnostics.final_resolved_exec_path = direct_sb
-  launch_diagnostics.route = "smb-direct-sb-noarg"
-  context.launch_route = "smb-direct-sb-noarg"
-end
 
 if UI ~= nil and UI.CoverCache ~= nil and UI.CoverCache.Clear ~= nil then
     UI.CoverCache:Clear()
