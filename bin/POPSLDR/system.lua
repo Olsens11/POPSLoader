@@ -9254,6 +9254,11 @@ if device_page == "SMB" then
   reboot_iop = 1
 end
 
+-- TEST: SMB needs a clean IOP before POPStarter takes over.
+if device_page == "SMB" then
+  reboot_iop = 1
+end
+
 function PLDR.RunPOPStarterGame(gamelocation, game, ui_scene, launch_options)
   local policy, device_page = ResolveLaunchPolicy(gamelocation, ui_scene)
   local selected_entry = tostring(game or "")
