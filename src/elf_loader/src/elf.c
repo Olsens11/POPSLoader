@@ -586,13 +586,19 @@ int LoadELFFromFileExecPS2(const char *filename, int argc, char *argv[])
 	t_ExecData elfdata;
 	char resolved_path[256];
 	int ret;
-
 	if (!has_valid_target_argv0(argc, argv)) {
 		return -4;
 	}
 	if (resolve_exec_path(filename, resolved_path, sizeof(resolved_path)) < 0) {
 		return -1;
 	}
+
+	/* TEST: route SMB POPStarter through the BRAM embedded loader. */
+	if (argc > 0 && argv != NULL && argv[0] != NULL &&
+	    (strstr(argv[0], "/SB.") != NULL || strncmp(argv[0], "SB.", 3) == 0)) {
+		return ExecuteViaEmbeddedLoader("", resolved_path, argc, argv);
+	}
+
 	DPRINTF("LAUNCH: Using ExecPS2\n");
 	DPRINTF("POPSTARTER ExecPS2 argv0=%s\n", argv[0]);
 
